@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIPI — Регистрация</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" aria-label="На главную">
+        <img src="./img/logo.jpg" alt="Логотип DIPI">
+        <h1>DIPI</h1>
+    </a>
+    <nav>
+        <a href="index.html">Главная</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="cart.html">Корзина</a>
+    </nav>
+    <div class="header-phone">
+      8-800-084-8888
+      <span class="hours">(с 10:00 до 22:00)</span>
+    </div>
+</header>
+
+<div class="container">
+  <div class="register-card">
+    <h2>Создать аккаунт</h2>
+    <p class="muted">Укажите свои данные, чтобы получить доступ к заказам и скидкам.</p>
+
+    <form id="register-form" novalidate>
+      <label>
+        <span>Имя</span>
+        <input type="text" name="name" id="name" required placeholder="Иван Иванов">
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input type="email" name="email" id="email" required placeholder="example@mail.kz">
+      </label>
+
+      <label>
+        <span>Пароль</span>
+        <input type="password" name="password" id="password" required minlength="6" placeholder="Не менее 6 символов">
+      </label>
+
+      <label>
+        <span>Подтвердите пароль</span>
+        <input type="password" name="confirm" id="confirm" required placeholder="Повторите пароль">
+      </label>
+
+      <label class="checkbox">
+        <input type="checkbox" id="agree" required>
+        <span>Я принимаю условия пользовательского соглашения</span>
+      </label>
+
+      <div class="form-row">
+        <button type="submit" class="btn-submit">Зарегистрироваться</button>
+      </div>
+
+      <div id="register-message" class="register-message" role="status" aria-live="polite" hidden></div>
+    </form>
+
+    <p class="small">Уже есть аккаунт? <a href="login.html">Войти</a></p>
+  </div>
+</div>
+
+<script>
+(function () {
+  const form = document.getElementById('register-form');
+  const msg = document.getElementById('register-message');
+
+  function showMessage(text, ok = true) {
+    msg.hidden = false;
+    msg.textContent = text;
+    msg.className = 'register-message ' + (ok ? 'ok' : 'err');
+    setTimeout(() => {
+      msg.hidden = true;
+    }, 4000);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    const confirm = form.confirm.value;
+    const agree = form.agree.checked;
+
+    if (!name || !email || !password || !confirm) {
+      showMessage('Заполните все обязательные поля', false);
+      return;
+    }
+    if (password.length < 6) {
+      showMessage('Пароль слишком короткий (не менее 6 символов)', false);
+      return;
+    }
+    if (password !== confirm) {
+      showMessage('Пароли не совпадают', false);
+      return;
+    }
+    if (!agree) {
+      showMessage('Необходимо согласие с условиями', false);
+      return;
+    }
+
+    const user = { name, email, createdAt: Date.now() };
+    localStorage.setItem('user', JSON.stringify(user));
+
+    form.reset();
+    showMessage('Регистрация успешно завершена', true);
+  });
+})();
+</script>
+</body>
+</html>

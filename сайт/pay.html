@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1"/>
+	<title>Оформление заказа</title>
+	<style>
+		body{font-family:Arial,Helvetica,sans-serif;background:#f7f7f8;margin:0;padding:20px}
+		.container{max-width:900px;margin:0 auto;background:#fff;padding:20px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+		h1{margin-top:0}
+		.grid{display:flex;gap:20px;flex-wrap:wrap}
+		.col{flex:1;min-width:260px}
+		.input{display:flex;flex-direction:column;margin-bottom:10px}
+		label{font-weight:600;margin-bottom:6px}
+		input,select,textarea{padding:8px;border:1px solid #ccc;border-radius:4px;font-size:14px}
+		.summary{border:1px solid #e3e3e3;padding:12px;border-radius:6px;background:#fafafa}
+		.items{max-height:220px;overflow:auto;margin-bottom:10px}
+		.item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee}
+		.total{font-weight:700;text-align:right;margin-top:8px}
+		.btn{background:#0066ff;color:#fff;padding:10px 14px;border:none;border-radius:6px;cursor:pointer}
+		.btn:disabled{opacity:.6;cursor:not-allowed}
+		.notice{padding:10px;border-radius:6px;margin-top:12px}
+		.success{background:#e6ffed;border:1px solid #b7f2c7;color:#03693a}
+		.error{background:#ffecec;border:1px solid #f1b7b7;color:#7a1818}
+		.small{font-size:13px;color:#666}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Оформление заказа</h1>
+		<div class="grid">
+			<div class="col">
+				<form id="orderForm" novalidate>
+					<div class="input">
+						<label for="fullname">ФИО</label>
+						<input id="fullname" name="fullname" required placeholder="Иван Иванов"/>
+					</div>
+					<div class="input">
+						<label for="email">Email</label>
+						<input id="email" type="email" name="email" required placeholder="ivan@example.com"/>
+					</div>
+					<div class="input">
+						<label for="phone">Телефон</label>
+						<input id="phone" name="phone" required placeholder="+7 900 000-00-00"/>
+					</div>
+					<div class="input">
+						<label for="address">Адрес доставки</label>
+						<textarea id="address" name="address" rows="3" required placeholder="Улица, дом, кв."></textarea>
+					</div>
+					<div class="input">
+						<label for="delivery">Способ доставки</label>
+						<select id="delivery" name="delivery">
+							<option value="pickup">Самовывоз</option>
+							<option value="courier" selected>Курьер</option>
+							<option value="post">Почта</option>
+						</select>
+					</div>
+
+					<h3>Оплата</h3>
+					<div class="input">
+						<label for="payMethod">Метод оплаты</label>
+						<select id="payMethod" name="payMethod">
+							<option value="card" selected>Карта</option>
+							<option value="cash">Наличными при получении</option>
+						</select>
+					</div>
+
+					<div id="cardFields">
+						<div class="input">
+							<label for="cardNumber">Номер карты</label>
+							<input id="cardNumber" name="cardNumber" inputmode="numeric" placeholder="4242 4242 4242 4242"/>
+						</div>
+						<div style="display:flex;gap:8px">
+							<div class="input" style="flex:1">
+								<label for="exp">Срок действия (MM/YY)</label>
+								<input id="exp" name="exp" placeholder="12/25"/>
+							</div>
+							<div class="input" style="width:120px">
+								<label for="cvv">CVV</label>
+								<input id="cvv" name="cvv" inputmode="numeric" placeholder="123"/>
+							</div>
+						</div>
+					</div>
+
+					<button class="btn" type="submit" id="submitBtn">Оформить заказ</button>
+					<div id="formNotice" class="notice" style="display:none;"></div>
+				</form>
+			</div>
+
+			<div class="col">
+				<h3>Сводка заказа</h3>
+				<div class="summary">
+					<div id="items" class="items"></div>
+					<div class="total" id="total">Итого: 0 ₸</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="result" style="margin-top:16px"></div>
+	</div>
+
+	<script>
+		const el = id => document.getElementById(id);
+
+		function loadCart() {
+			try {
+				const raw = localStorage.getItem('cart');
+				if (!raw) return sampleCart();
+				const parsed = JSON.parse(raw);
+				if (!Array.isArray(parsed)) return sampleCart();
+				return parsed;
+			} catch (e) {
+				return sampleCart();
+			}
+		}
+		function sampleCart() {
+			return [
+				{ id: 1, name: 'Товар пример 1', qty: 1, price: 499 },
+				{ id: 2, name: 'Товар пример 2', qty: 2, price: 299 }
+			];
+		}
+
+		function renderCart() {
+			const itemsEl = el('items');
+			itemsEl.innerHTML = '';
+			const cart = loadCart();
+			let total = 0;
+			cart.forEach(it => {
+				const line = document.createElement('div');
+				line.className = 'item';
+				const name = document.createElement('div');
+				name.textContent = `${it.name} × ${it.qty}`;
+				const price = document.createElement('div');
+				const lineTotal = (it.price * it.qty);
+				price.textContent = `${lineTotal} ₸`;
+				line.appendChild(name);
+				line.appendChild(price);
+				itemsEl.appendChild(line);
+				total += lineTotal;
+			});
+			el('total').textContent = `Итого: ${total} ₸`;
+			return {cart, total};
+		}
+
+		el('payMethod').addEventListener('change', () => {
+			const card = el('cardFields');
+			if (el('payMethod').value === 'card') card.style.display = '';
+			else card.style.display = 'none';
+		});
+		renderCart();
+
+		function validateForm(values) {
+			const errors = [];
+			if (!values.fullname || values.fullname.trim().length < 2) errors.push('Введите ФИО');
+			if (!values.email || !/^\S+@\S+\.\S+$/.test(values.email)) errors.push('Введите корректный email');
+			if (!values.phone || values.phone.trim().length < 6) errors.push('Введите телефон');
+			if (!values.address || values.address.trim().length < 5) errors.push('Введите адрес доставки');
+			if (values.payMethod === 'card') {
+				if (!values.cardNumber || values.cardNumber.replace(/\s+/g,'').length < 12) errors.push('Введите корректный номер карты');
+				if (!values.exp || !/^\d{2}\/\d{2}$/.test(values.exp)) errors.push('Введите срок действия в формате MM/YY');
+				if (!values.cvv || !/^\d{3,4}$/.test(values.cvv)) errors.push('Введите CVV');
+			}
+			return errors;
+		}
+
+		el('orderForm').addEventListener('submit', (ev) => {
+			ev.preventDefault();
+			const submitBtn = el('submitBtn');
+			submitBtn.disabled = true;
+			const notice = el('formNotice');
+			notice.style.display = 'none';
+			notice.className = 'notice';
+
+			const values = {
+				fullname: el('fullname').value,
+				email: el('email').value,
+				phone: el('phone').value,
+				address: el('address').value,
+				delivery: el('delivery').value,
+				payMethod: el('payMethod').value,
+				cardNumber: el('cardNumber').value,
+				exp: el('exp').value,
+				cvv: el('cvv').value
+			};
+
+			const cartData = renderCart();
+			const errors = validateForm(values);
+			if (!cartData.cart || cartData.cart.length === 0) errors.push('Корзина пуста');
+
+			if (errors.length) {
+				notice.style.display = '';
+				notice.classList.add('error');
+				notice.textContent = errors.join('; ');
+				submitBtn.disabled = false;
+				return;
+			}
+
+			notice.style.display = '';
+			notice.classList.add('small');
+			notice.textContent = 'Обработка заказа...';
+
+			setTimeout(() => {
+				const order = {
+					id: 'ORD-' + Date.now(),
+					createdAt: new Date().toISOString(),
+					customer: { fullname: values.fullname, email: values.email, phone: values.phone, address: values.address },
+					delivery: values.delivery,
+					payment: { method: values.payMethod },
+					items: cartData.cart,
+					total: cartData.total
+				};
+				if (values.payMethod === 'card') {
+					const last4 = values.cardNumber.replace(/\D/g,'').slice(-4);
+					order.payment.cardLast4 = last4;
+				}
+
+				localStorage.setItem('lastOrder', JSON.stringify(order));
+				localStorage.removeItem('cart');
+
+				const result = el('result');
+				result.innerHTML = '';
+				const success = document.createElement('div');
+				success.className = 'notice success';
+				success.innerHTML = `<strong>Заказ оформлен</strong><br>Номер заказа: ${order.id}<br>Сумма: ${order.total} ₸<br>На почту: ${order.customer.email}`;
+				result.appendChild(success);
+
+				const email = el('email').value;
+				el('orderForm').reset();
+				el('email').value = email;
+				renderCart();
+				notice.style.display = 'none';
+				submitBtn.disabled = false;
+			}, 900);
+		});
+	</script>
+</body>
+</html>
+</html>

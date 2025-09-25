@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIPI — Вход</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo" aria-label="На главную">
+    <img src="./img/logo.jpg" alt="Логотип DIPI">
+    <h1>DIPI</h1>
+  </a>
+  <nav>
+    <a href="index.html">Главная</a>
+    <a href="catalog.html">Каталог</a>
+    <a href="register.html">Регистрация</a>
+  </nav>
+  <div class="header-phone">
+    8-800-084-8888
+    <span class="hours">(с 10:00 до 22:00)</span>
+  </div>
+</header>
+
+<div class="container">
+  <div class="register-card">
+    <h2>Вход в аккаунт</h2>
+    <p class="muted">Введите email, который вы использовали при регистрации.</p>
+
+    <form id="login-form" novalidate>
+      <label>
+        <span>Email</span>
+        <input type="email" id="email" required placeholder="example@mail.kz">
+      </label>
+
+      <label>
+        <span>Пароль</span>
+        <input type="password" id="password" placeholder="Пароль">
+      </label>
+
+      <div class="form-row">
+        <button type="submit" class="btn-submit">Войти</button>
+      </div>
+
+      <div id="login-message" class="register-message" role="status" aria-live="polite" hidden></div>
+    </form>
+
+    <p class="small">Нет аккаунта? <a href="register.html">Создать</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const form = document.getElementById('login-form');
+  const msg = document.getElementById('login-message');
+
+  function show(text, ok = true) {
+    msg.hidden = false;
+    msg.textContent = text;
+    msg.className = 'register-message ' + (ok ? 'ok' : 'err');
+    setTimeout(()=> msg.hidden = true, 3000);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    if (!email) { show('Введите email', false); return; }
+
+    try {
+      const raw = localStorage.getItem('user');
+      const user = raw ? JSON.parse(raw) : null;
+      if (user && user.email === email) {
+        localStorage.setItem('currentUser', JSON.stringify({ email: user.email, name: user.name, at: Date.now() }));
+        show('Вход успешен', true);
+        setTimeout(() => location.href = 'index.html', 900);
+      } else {
+        show('Пользователь не найден', false);
+      }
+    } catch (err) {
+      show('Ошибка, повторите попытку', false);
+      console.error(err);
+    }
+  });
+})();
+</script>
+</body>
+</html>

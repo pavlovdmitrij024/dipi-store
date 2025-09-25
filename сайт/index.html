@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIPI — Главная</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="home">
+<header>
+    <a href="index.html" class="logo" aria-label="На главную">
+        <img src="./img/logo.jpg" alt="Логотип DIPI">
+        <h1>DIPI</h1>
+    </a>
+    <nav>
+        <a href="catalog.html">Каталог</a>
+        <a href="cart.html">Корзина</a>
+        <a href="register.html">Регистрация</a>
+    </nav>
+    <div class="header-phone">
+      За всей помощью звоните по номеру: 8-800-084-8888
+      <span class="hours">(с 10:00 до 22:00)</span>
+    </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner container">
+    <div class="hero-left">
+      <h1 class="hero-title">Давайте погрузимся <span class="highlight">В МИР</span> Технологий.</h1>
+      <a class="shop-now" href="catalog.html">Каталог</a>
+    </div>
+    <div class="hero-right">
+      <img src="./img/promo.png" alt="Hero image" />
+    </div>
+  </div>
+</section>
+
+<section class="brands">
+  <div class="brands-inner container">
+    <img src="./img/logitech.png" alt="Logitech">
+    <img src="./img/lg.png" alt="LG">
+    <img src="./img/asus.png" alt="ASUS">
+    <img src="./img/razer.png" alt="Razer">
+  </div>
+</section>
+
+<section class="new-arrivals container">
+  <h2>NEW ARRIVALS</h2>
+</section>
+
+<div class="products">
+  <div class="card" data-id="Razer DeathAdder" data-desc="Классическая игровая мышь Razer DeathAdder с точным сенсором и эргономикой.">
+    <img src="./img/7.webp" alt="Товар 1">
+    <h3>Razer DeathAdder</h3>
+    <p class="price">35000 ₸</p>
+    <div class="buttons">
+      <a href="cart.html" class="btn-buy">Купить</a>
+      <button type="button" class="btn-desc">Описание</button>
+    </div>
+  </div>
+  <div class="card" data-id="Attack Shark Keyboard" data-desc="Механическая клавиатура Attack Shark с подсветкой и тактильными переключателями.">
+    <img src="./img/2l.jpeg" alt="Товар 2">
+    <h3>Attack Shark Keyboard</h3>
+    <p class="price">25000 ₸</p>
+    <div class="buttons">
+      <a href="cart.html" class="btn-buy">Купить</a>
+      <button type="button" class="btn-desc">Описание</button>
+    </div>
+  </div>
+  <div class="card" data-id="Logitech G Pro X" data-desc="Профессиональная игровая гарнитура Logitech G Pro X — четкий звук и удобство длительных сессий.">
+    <img src="./img/1.png" alt="Товар 3">
+    <h3>Logitech G Pro X</h3>
+    <p class="price">45000 ₸</p>
+    <div class="buttons">
+      <a href="cart.html" class="btn-buy">Купить</a>
+      <button type="button" class="btn-desc">Описание</button>
+    </div>
+  </div>
+</div>
+
+<div id="product-modal" class="modal" role="dialog" aria-modal="true" hidden>
+  <div class="modal-inner">
+    <button type="button" class="modal-close" aria-label="Закрыть">×</button>
+    <h3 class="modal-title"></h3>
+    <img class="modal-img" src="" alt="" />
+    <p class="modal-desc"></p>
+    <h4>Отзывы</h4>
+    <div class="reviews-list"></div>
+    <form class="review-form">
+      <input name="review-name" placeholder="Ваше имя" />
+      <textarea name="review-text" placeholder="Оставьте отзыв"></textarea>
+      <button type="submit">Отправить отзыв</button>
+    </form>
+  </div>
+</div>
+
+<script src="cart.js" defer></script>
+
+<div id="cart-notification" class="cart-notification" aria-live="polite" role="status">Товар добавлен в корзину</div>
+</body>
+</html>

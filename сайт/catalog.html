@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIPI — Каталог</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <a href="index.html" class="logo" aria-label="На главную">
+        <img src="./img/logo.jpg" alt="Логотип DIPI">
+        <h1>DIPI</h1>
+    </a>
+    <nav>
+        <a href="index.html">Главная</a>
+        <a href="cart.html">Корзина</a>
+        <a href="register.html">Регистрация</a>
+    </nav>
+    <div class="header-phone">
+      8-800-084-8888
+      <span class="hours">(с 10:00 до 22:00)</span>
+    </div>
+</header>
+<div class="container">
+    <h2>Каталог</h2>
+    <label>Фильтр по бренду:
+        <select id="brand-filter">
+            <option value="all">Все</option>
+            <option value="Logitech">Logitech</option>
+            <option value="Razer">Razer</option>
+            <option value="Inphic">Inphic</option>
+            <option value="Attack Shark">Attack Shark</option>
+            <option value="HyperX">HyperX</option>
+            <option value="ASUS">ASUS</option>
+            <option value="LG">LG</option>
+            <option value="MSI">MSI</option>
+        </select>
+    </label>
+
+    <div class="price-filter" style="margin-top:8px;">
+        <label style="margin-right:8px;">Цена:
+            <input id="price-min" type="number" placeholder="Мин" min="0" style="width:100px; margin-left:6px;">
+            <span style="margin:0 6px;">—</span>
+            <input id="price-max" type="number" placeholder="Макс" min="0" style="width:100px;">
+        </label>
+        <button id="price-reset" type="button" style="margin-left:12px;padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">Сброс</button>
+
+        <label style="margin-left:16px;">Сортировать:
+          <select id="price-sort" style="margin-left:8px;">
+            <option value="default">По умолчанию</option>
+            <option value="asc">По возрастанию</option>
+            <option value="desc">По убыванию</option>
+          </select>
+        </label>
+    </div>
+
+    <div class="catalog" id="product-list"></div>
+</div>
+<script src="catalog.js"></script>
+
+<div id="cart-notification" class="cart-notification" aria-live="polite" role="status">Товар добавлен в корзину</div>
+
+<div id="product-modal" class="modal" role="dialog" aria-modal="true" hidden>
+  <div class="modal-inner">
+    <button type="button" class="modal-close" aria-label="Закрыть">×</button>
+    <h3 class="modal-title"></h3>
+    <img class="modal-img" src="" alt="" />
+    <p class="modal-desc"></p>
+    <h4>Отзывы</h4>
+    <div class="reviews-list"></div>
+    <form class="review-form">
+      <input name="review-name" placeholder="Ваше имя" />
+      <textarea name="review-text" placeholder="Оставьте отзыв"></textarea>
+      <button type="submit">Отправить отзыв</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>
